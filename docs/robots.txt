@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://acnx777.github.io/ACNXOptimizer/sitemap.xml
