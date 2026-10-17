@@ -46,6 +46,34 @@ if not exist "C:\Optimizer Logs" mkdir "C:\Optimizer Logs" >nul 2>&1
 if not exist "C:\Optimizer Backup" mkdir "C:\Optimizer Backup" >nul 2>&1
 echo [%DATE% %TIME%] Optimizer started. >> "C:\Optimizer Logs\Optimizer.txt"
 
+:: ---------- PERINGATAN RISIKO DAN KEAMANAN ----------
+:WARN
+cls
+call :BANNER
+echo %Red%%Bold%  !!! PERINGATAN RISIKO ^& KEAMANAN !!!%Reset%
+echo.
+echo   %White%Script ini berjalan sebagai %Red%%Bold%Administrator%Reset%%White% dan mengubah%Reset%
+echo   %Yellow%registry Windows, service Windows,%Reset%%White% dan %Reset%%Yellow%konfigurasi jaringan%Reset%%White%.%Reset%
+echo.
+echo   %Red%%Bold%Karena itu script ini TIDAK bisa disebut "100%% aman".%Reset%
+echo.
+echo   %Yellow%[1]%White% Reset jaringan (menu 3) - VPN, DNS custom, IP statis bisa hilang. Wajib reboot.%Reset%
+echo   %Yellow%[2]%White% Mematikan service (SysMain / Windows Search / Xbox) - buka app bisa lambat.%Reset%
+echo   %Yellow%[3]%White% Hapus Temp / Prefetch / cache Windows Update - %Red%tidak bisa dikembalikan%Reset%%White%.%Reset%
+echo   %Yellow%[4]%White% GPU clock lock (menu 4) - bisa crash / black screen kalau nilainya salah.%Reset%
+echo   %Yellow%[5]%White% Antivirus / SmartScreen bisa memperingatkan. Umumnya %Green%false positive%Reset%%White%.%Reset%
+echo.
+echo   %Green%Pengaman yang tersedia:%Reset%
+echo   %White%- Restore Point otomatis dan backup registry HKLM ^& HKCU%Reset%
+echo   %White%- Menu %Green%[9] Restore Defaults%Reset%%White% untuk membatalkan semua tweak%Reset%
+echo   %DarkGray%- Restore Point HANYA registry dan file sistem, BUKAN data pribadi Anda.%Reset%
+echo.
+echo   %Cyan%Penjelasan lengkap: menu %White%[10] Keamanan ^& Risiko%Reset%
+echo.
+set /p "cw=%Cyan%  Ketik Y kalau sudah paham, N untuk keluar tanpa mengubah apa pun: "
+if /i not "%cw%"=="Y" goto :EXIT
+goto :PREFLIGHT
+
 :: ---------- PREFLIGHT ----------
 :PREFLIGHT
 cls
@@ -115,9 +143,10 @@ echo   %Green%[6] %White%Disk dan RAM Cleanup
 echo   %Green%[7] %White%Power Plan
 echo   %Green%[8] %White%Maintenance %DarkGray%(SFC / DISM / Restore Point)%Reset%
 echo   %Green%[9] %White%Restore Defaults %DarkGray%(undo semua tweak)%Reset%
+echo   %Cyan%[10]%White% Keamanan ^& Risiko %DarkGray%(baca sebelum pakai)%Reset%
 echo   %Red%[0] %White%Keluar
 echo.
-set /p "m=%Cyan%  Pilih [0-9]: "
+set /p "m=%Cyan%  Pilih [0-10]: "
 if "%m%"=="1" goto :SYSINFO
 if "%m%"=="2" goto :SYSTWEAK
 if "%m%"=="3" goto :NETMENU
@@ -127,6 +156,7 @@ if "%m%"=="6" goto :CLEANMENU
 if "%m%"=="7" goto :POWERMENU
 if "%m%"=="8" goto :MAINTMENU
 if "%m%"=="9" goto :RESTOREMENU
+if "%m%"=="10" goto :RISKINFO
 if "%m%"=="0" goto :EXIT
 echo %Red%  Pilihan tidak valid.%Reset%
 timeout 2 >nul
@@ -1112,6 +1142,86 @@ timeout 2 >nul
 goto :RESTOREMENU
 
 :: ============================================================
+::  10. KEAMANAN DAN RISIKO
+:: ============================================================
+:RISKINFO
+cls
+call :BANNER
+call :HDR "KEAMANAN DAN RISIKO - BACA SEBELUM PAKAI"
+echo %Red%%Bold%  Ringkasan:%Reset%
+echo   %White%Script ini %Red%bukan "100%% aman"%Reset%%White%. Yang %Green%100%%%Reset%%White% hanya%Reset%
+echo   %White%sifat %Green%offline%Reset%%White%-nya (tidak mengunduh apa pun dari internet).%Reset%
+echo   %White%Tapi karena script ini mengubah %Yellow%registry, service, dan jaringan%Reset%
+echo   %White%Windows sebagai Administrator, selalu ada risiko.%Reset%
+echo.
+echo %Yellow%%Bold%  A. RISIKO UTAMA%Reset%
+echo.
+echo   %Red%[Reset Jaringan - menu 3]%Reset%
+echo   %White%  Perintah: netsh winsock reset, netsh int ip reset, netsh int ipv4/ipv6 reset%Reset%
+echo   %White%  Dampak  : seluruh stack jaringan kembali ke default Windows.%Reset%
+echo   %Yellow%  - VPN, DNS custom, IP statis, dan proxy bisa hilang.%Reset%
+echo   %Yellow%  - Wajib reboot. Sesekali Wi-Fi perlu di-setup ulang.%Reset%
+echo.
+echo   %Red%[Mematikan Service - menu 5]%Reset%
+echo   %White%  Service: DiagTrack, dmwappushservice, Fax, SysMain, Windows Search, Xbox%Reset%
+echo   %Yellow%  - Windows Search (WSearch) mati : pencarian file dan Start jadi lambat.%Reset%
+echo   %Yellow%  - SysMain mati : membuka aplikasi bisa lebih lambat, terutama di HDD.%Reset%
+echo   %Yellow%  - Layanan Xbox mati : game dari Microsoft Store bisa tidak jalan.%Reset%
+echo   %Yellow%  - Bersifat permanen sampai dibatalkan lewat menu [9].%Reset%
+echo.
+echo   %Red%[Hapus File - menu 6]%Reset%
+echo   %White%  Target: folder Temp, C:\Windows\Temp, Prefetch, cache Windows Update%Reset%
+echo   %Yellow%  - Tidak bisa dikembalikan (tidak masuk Recycle Bin).%Reset%
+echo   %Yellow%  - Tanpa Prefetch : aplikasi pertama kali dibuka jadi lebih lambat.%Reset%
+echo   %Yellow%  - Cache update Windows dihapus : update harus diunduh ulang.%Reset%
+echo.
+echo   %Red%[GPU Tweaking - menu 4]%Reset%
+echo   %White%  Perintah: nvidia-smi -pl (power limit), nvidia-smi -lgc (clock lock)%Reset%
+echo   %Yellow%  - Power limit diturunkan : relatif aman, GPU lebih dingin tapi sedikit lebih lambat.%Reset%
+echo   %Yellow%  - Clock lock : kalau nilainya salah bisa driver crash, black screen, reboot.%Reset%
+echo.
+echo   %Red%[Tweak Sistem - menu 2]%Reset%
+echo   %Yellow%  - HAGS (HwSchMode=2) : di sebagian driver atau game justru bikin stutter.%Reset%
+echo   %Yellow%  - NetworkThrottlingIndex dimatikan : di sebagian sistem jaringan jadi kurang stabil.%Reset%
+echo   %Yellow%  - Telemetry dan service dimatikan : bisa bertentangan dengan kebijakan kantor/sekolah.%Reset%
+echo.
+echo   %Red%[Hak Administrator]%Reset%
+echo   %Yellow%  - Kalau script berhenti di tengah jalan, Windows bisa tertinggal setengah tertweak.%Reset%
+echo.
+echo %Green%%Bold%  B. YANG TIDAK DILAKUKAN SCRIPT%Reset%
+echo   %Green%+%Reset%%White% Tidak menyentuh boot (tidak ada bcdedit atau bootsect)%Reset%
+echo   %Green%+%Reset%%White% Tidak memformat atau menghapus partisi%Reset%
+echo   %Green%+%Reset%%White% Tidak menghapus service (tidak ada sc delete), hanya menonaktifkan%Reset%
+echo   %Green%+%Reset%%White% Tidak mematikan Windows Defender atau firewall%Reset%
+echo   %Green%+%Reset%%White% Tidak mematikan IPv6, jadi Wi-Fi tetap normal%Reset%
+echo   %Green%+%Reset%%White% Tidak mengirim data ke internet (100%% offline)%Reset%
+echo.
+echo %Cyan%%Bold%  C. PENGAMAN YANG TERSEDIA%Reset%
+echo   %Green%+%Reset%%White% Restore Point otomatis (layar Persiapan atau menu [8])%Reset%
+echo   %Green%+%Reset%%White% Backup registry HKLM dan HKCU ke C:\Optimizer Backup\Registry%Reset%
+echo   %Green%+%Reset%%White% Backup registry adapter jaringan ke C:\Optimizer Backup\Network%Reset%
+echo   %Green%+%Reset%%White% Menu [9] Restore Defaults untuk membatalkan semua tweak%Reset%
+echo   %Green%+%Reset%%White% Konfirmasi Y/N sebelum tindakan berbahaya%Reset%
+echo   %DarkGray%  Catatan: Restore Point hanya registry dan file sistem, BUKAN data pribadi.%Reset%
+echo.
+echo %Yellow%%Bold%  D. ANTIVIRUS DAN SMARTSREEN%Reset%
+echo   %White%File .bat yang mengubah registry sering dicurigai antivirus atau SmartScreen.%Reset%
+echo   %White%Pada script ini umumnya %Green%false positive%Reset%%White% karena sumbernya terbuka (MIT).%Reset%
+echo   %White%Unduh hanya dari halaman resmi Releases:%Reset%
+echo   %Cyan%  https://github.com/ACNX777/ACNXOptimizer/releases/latest%Reset%
+echo.
+echo %Magenta%%Bold%  E. CARA PAKAI PALING AMAN%Reset%
+echo   %White%1. Buat Restore Point dulu lewat layar Persiapan.%Reset%
+echo   %White%2. Tes dulu di VM (VirtualBox atau VMware) kalau memungkinkan.%Reset%
+echo   %White%3. Jangan jalankan semua menu sekaligus. Satu per satu, lalu reboot.%Reset%
+echo   %White%4. Catat perubahan supaya mudah dibatalkan lewat menu [9].%Reset%
+echo.
+echo %Red%  Kalau Anda tidak nyaman dengan risiko di atas, keluar dan jangan lanjut.%Reset%
+echo.
+call :PAUSE_RET
+goto :MENU
+
+:: ============================================================
 ::  KELUAR
 :: ============================================================
 :EXIT
@@ -1132,7 +1242,7 @@ exit /b 0
 echo.
 echo %Magenta%  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄%Reset%
 echo %Magenta%  ▌  %Cyan%ACNX777+ OPTIMIZER%Magenta%   %Yellow%Oneclick Style%Magenta%   %Green%Offline%Reset%
-echo %Magenta%  ▌  %DarkGray%Ethernet + WiFi Edition  v2.0%Magenta%            %DarkGray%by ACNX777+%Reset%
+echo %Magenta%  ▌  %DarkGray%Ethernet + WiFi Edition  v2.1%Magenta%            %DarkGray%by ACNX777+%Reset%
 echo %Magenta%  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀%Reset%
 echo.
 goto :eof

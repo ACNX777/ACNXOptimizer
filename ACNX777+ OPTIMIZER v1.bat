@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
-title ACNX777+ OPTIMIZER v1.0
+title ACNX777+ OPTIMIZER v1.1
 
 :: ============================================================
 ::  ACNX777+ OPTIMIZER
@@ -22,12 +22,34 @@ exit /b
 cls
 
 :: ============================================================
+::  PERINGATAN RISIKO DAN KEAMANAN
+:: ============================================================
+call :HDR "PERINGATAN RISIKO DAN KEAMANAN"
+echo   Script ini berjalan sebagai Administrator dan mengubah
+echo   registry Windows, service Windows, dan konfigurasi jaringan.
+echo.
+echo   Maka dari itu script ini TIDAK bisa disebut "100%% aman".
+echo.
+echo   [1] Reset jaringan (menu 3)  : VPN, DNS custom, IP statis bisa hilang.
+echo   [2] Matikan service (menu 7) : Windows Search / SysMain / Xbox jadi lambat.
+echo   [3] Hapus file (menu 4)      : Temp, Prefetch, cache update. Tidak bisa kembali.
+echo   [4] Tweak GPU (menu 2)       : clock lock salah bisa crash atau black screen.
+echo   [5] Antivirus / SmartScreen bisa memperingatkan (umumnya false positive).
+echo.
+echo   Pengaman: Restore Point, backup registry, dan menu [10] Restore Defaults.
+echo   Restore Point hanya registry dan file sistem, BUKAN data pribadi Anda.
+echo.
+set /p "cw1=  Ketik Y kalau sudah paham, N untuk keluar: "
+if /i not "%cw1%"=="Y" exit /b
+cls
+
+:: ============================================================
 ::  MENU UTAMA
 :: ============================================================
 :MENU
 color 0B
 cls
-call :HDR "ACNX777+ OPTIMIZER  v1.0"
+call :HDR "ACNX777+ OPTIMIZER  v1.1"
 echo   [1]  Diagnostik Sistem / System Info
 echo   [2]  GPU Tweaking        - NVIDIA / AMD / Intel
 echo   [3]  Optimasi Jaringan   - Network / Internet
