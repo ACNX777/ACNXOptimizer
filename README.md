@@ -1,10 +1,10 @@
-# ACNX+ OPTIMIZER
+# ACNX Optimizer
 
-> Optimizer PC/Laptop Windows — 100% offline. File script: `ACNX777+ OPTIMIZER.bat`
+> **ACNX Optimizer** (nama file: `ACNX777+ OPTIMIZER.bat`) — optimizer **PC / Laptop Windows** yang **100% offline**, tanpa install program tambahan dan tanpa download apa pun.
 
-Script `.bat` untuk optimasi **PC / Laptop Windows** — **100% offline**, tanpa install program tambahan, tanpa download apa pun.
+**ACNX Optimizer** adalah script `.bat` untuk optimasi **PC dan Laptop Windows**. Semua fitur memakai tool bawaan Windows: `powercfg`, `netsh`, `reg`, `sc`, `defrag`, dan PowerShell — jadi tidak butuh internet sama sekali.
 
-Semua fitur memakai tool bawaan Windows: `powercfg`, `netsh`, `reg`, `sc`, `defrag`, dan PowerShell.
+🌐 **Situs:** https://acnx777.github.io/ACNXOptimizer/ — 📦 **Download:** [Releases](../../releases/latest)
 
 ---
 
