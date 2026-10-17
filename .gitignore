@@ -1,0 +1,10 @@
+# File sementara / lokal
+*.tmp
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Dibuat saat script dijalankan (kalau berada di folder ini)
+Optimizer Logs/
+Optimizer Backup/
